@@ -1,0 +1,10 @@
+title 0.6 uusi muistiinpano
+
+selain->palvelin: HTTP POST: https://fullstack-exampleapp.herokuapp.com/new_note_spa
+palvelin->selain: {content: "uus", date: "2020-03-13T16:53:04.079Z"}
+
+note over selain
+Palvelin vastaa statuskoodilla 201 created. 
+Muistiinpano on tehty ja selain pysyy samalla sivulla, 
+ei suoriteta uudelleenohjausta.
+end note
