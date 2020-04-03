@@ -1,6 +1,8 @@
 import React from 'react'
+import personService from '../services/personService'
 
-const PersonForm = ({persons, setPersons, newName, setNewName, newNumber, setNewNumber}) => {
+const PersonForm = ({persons, setPersons, newName, 
+    setNewName, newNumber, setNewNumber, setMessage, setError}) => {
     const addPerson = (event) => {
         event.preventDefault()
         console.log('App, addPerson..')
@@ -8,21 +10,46 @@ const PersonForm = ({persons, setPersons, newName, setNewName, newNumber, setNew
             name: newName,
             number: newNumber
         }
-      
-      const findPerson = 
-        persons.find(person => person.name.toLowerCase() === newName.toLowerCase())
-        console.log('findPerson result: ',
-        persons.find(person => person.name === newName))
-  
+        const findPerson = 
+            persons.find(person => person.name.toLowerCase() === newName.toLowerCase())
+            console.log('findPerson result: ',
+            persons.find(person => person.name === newName))
+
         if(findPerson !== undefined) {
-          window.alert(`${newName} is already added to phonebook`)
+            window.alert(`${newName} is already added to phonebook, replace the old
+            number with a new one?`)
+
+            personService
+                .update(findPerson.id, personObject)
+                .then(returnedPerson => {
+                    setPersons(persons.map(person => 
+                        person.id !== findPerson.id ? person : returnedPerson))
+                    setMessage(
+                        `Updated ${findPerson.name}'s number`
+                    )
+                })
+                .catch(error => {
+                    setError(true)
+                    setMessage(`${findPerson.name} was already deleted from server`)
+                })
+            setTimeout(() => {
+                setMessage(null)
+            }, 4000)
         }
-   
+
         else {
-          setPersons(persons.concat(personObject))   
+            personService
+                .addPerson(personObject)
+                .then(personObject => {
+                    setPersons(persons.concat(personObject))
+                    setNewName('')
+                    setNewNumber('')
+                          
+                })
+            setTimeout(() => {
+                setMessage(null)
+            }, 4000)         
         }
-        setNewName('')
-        setNewNumber('')
       }
     
     const handlePersonChange = (event) => {
