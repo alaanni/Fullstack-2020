@@ -44,6 +44,7 @@ const PersonForm = ({persons, setPersons, newName,
                     setPersons(persons.concat(personObject))
                     setNewName('')
                     setNewNumber('')
+                    setMessage(`Added ${personObject.name}`)
                           
                 })
             setTimeout(() => {
