@@ -3,7 +3,7 @@ import personService from '../services/personService'
 
 const Persons = ({persons, setPersons, newFilter, setMessage, setError}) => {
     const personsToShow = persons.filter(person => 
-        person.name.toLowerCase().includes(newFilter))
+        person.name.toLowerCase().includes(newFilter.toLowerCase()))
 
     const handleClick = (id, name) => () => {
         if (window.confirm(`delete ${name}?`)) {

@@ -16,11 +16,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "server": "json-server -p3001 --watch db.json",
-    "build:ui": "rm -rf build && cd ../../osa2/puhelinluettelo && npm run build --prod && cp -r build ../fullstack_osa3/",
-    "deploy": "git push heroku master",
-    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push heroku master && npm run deploy",    
-    "logs:prod": "heroku logs --tail"
+    "server": "json-server -p3001 --watch db.json"
   },
   "proxy": "http://localhost:3001",
   "eslintConfig": {

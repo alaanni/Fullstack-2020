@@ -44,6 +44,7 @@ const PersonForm = ({persons, setPersons, newName,
                     setPersons(persons.concat(personObject))
                     setNewName('')
                     setNewNumber('')
+                    setError(false)
                     setMessage(`Added ${personObject.name}`)
                           
                 })
