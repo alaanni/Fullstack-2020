@@ -13,6 +13,7 @@ const Persons = ({persons, setPersons, newFilter, setMessage, setError}) => {
                 setError(true)
                 setMessage(`${name} was already deleted from server`)
             })
+        setError(false)
         setMessage(
             `Deleted ${name}`
         )

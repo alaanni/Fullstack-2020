@@ -24,6 +24,7 @@ const PersonForm = ({persons, setPersons, newName,
                 .then(returnedPerson => {
                     setPersons(persons.map(person => 
                         person.id !== findPerson.id ? person : returnedPerson))
+                    setError(false)
                     setMessage(
                         `Updated ${findPerson.name}'s number`
                     )
@@ -47,6 +48,10 @@ const PersonForm = ({persons, setPersons, newName,
                     setError(false)
                     setMessage(`Added ${personObject.name}`)
                           
+                })
+                .catch(error => {
+                    setError(true)
+                    setMessage(error.response.data.error)
                 })
             setTimeout(() => {
                 setMessage(null)
