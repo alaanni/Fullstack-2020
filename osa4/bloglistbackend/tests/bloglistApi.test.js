@@ -6,10 +6,13 @@ const api = supertest(app)
 const bcrypt = require('bcryptjs')
 const User = require('../models/user')
 const Blog = require('../models/blog')
+const jwt = require('jsonwebtoken')
+const config = require('../utils/config')
+mongoose.set('useFindAndModify', false)
 
 beforeEach(async () => {
-    await Blog.deleteMany({})
-    await Blog.insertMany(helper.initialBlogs)
+  await Blog.deleteMany({})
+  await Blog.insertMany(helper.initialBlogs)
   })
 
 test('blogs are returned as json', async () => {
@@ -20,66 +23,27 @@ test('blogs are returned as json', async () => {
 })
 
 test('amount of blogs is correct', async() => {
-    const response = await api.get('/api/blogs')
-    expect(response.body).toHaveLength(helper.initialBlogs.length)
+  const response = await api.get('/api/blogs')
+  expect(response.body).toHaveLength(helper.initialBlogs.length)
 })
 
 test ('blog has id', async() => {
-    const response = await api.get('/api/blogs')
-    expect('id').toBeDefined()
+  const response = await api.get('/api/blogs')
+  expect('id').toBeDefined()
 })
 
-test('a new blog can be added', async() => {
-    const newBlog = { 
-        title: "Java", 
-        author: "Anni",
-        url: "https://js.com/",
-        user: "5ea8230ef25f9b2c38c0be78",
-        likes: 8
-    }
-      await api
-        .post('/api/blogs')
-        .set('Authorization', 'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFubmkiLCJpZCI6IjVlYTgyMzBlZjI1ZjliMmMzOGMwYmU3OCIsImlhdCI6MTU4ODEzNzkwNn0.DUuuhhHsAIbY8q2sNB9giaHNGSLfggyty30xcmuLrmE')
-        .send(newBlog)
-        .expect(200)
-        .expect('Content-Type', /application\/json/)
-    
-        const blogsAtEnd = await helper.blogsInDb()
-        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
-      
-        const titles = blogsAtEnd.map(n => n.title)
-        expect(titles).toContain(
-          "Java"
-        )
-})
-test('blogs likes is zero if likes not given', async() => {
-    const newBlog = { 
-        title: "JavaScript", 
-        author: "Anni",
-        url: "https://js.com/",
-        user: "5ea8230ef25f9b2c38c0be78"
+test('adding a blog without token returns statuscode 401', async() => {
+  const newBlog = 
+    { 
+      title: "Java", 
+      author: "Anni",
+      url: "https://java.com/",
+      likes: 8
     }
     await api
-        .post('/api/blogs')
-        .send(newBlog)
-        .expect(200)
-        .expect('Content-Type', /application\/json/)
-
-        const blogsAtEnd = await helper.blogsInDb()
-        const blogWithoutLikes = blogsAtEnd.find(blog => blog.likes === 0)
-        expect(blogWithoutLikes.likes).toBe(0)
-        
-})
-test('blog without title and url is bad request', async() => {
-    const newBlog = { 
-        author: "Anni",
-        likes: 5,
-        user: "5ea8230ef25f9b2c38c0be78"
-    }
-    await api
-        .post('/api/blogs')
-        .send(newBlog)
-        .expect(400)
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(401)
 })
 
 describe('when there is one user at db', () => {
@@ -95,11 +59,12 @@ describe('when there is one user at db', () => {
   test('creation succeeds with a unique username', async () => {
     const usersAtStart = await helper.usersInDb()
 
-    const newUser = {
-      username: 'anni',
-      name: 'Anni A',
-      password: 'salainen',
-    }
+    const newUser = 
+      {
+        username: 'anni',
+        name: 'Anni A',
+        password: 'salainen',
+      }
 
     await api
       .post('/api/users')
@@ -117,11 +82,12 @@ describe('when there is one user at db', () => {
   test('creation fails with proper statuscode and message if username already taken', async () => {
     const usersAtStart = await helper.usersInDb()
 
-    const newUser = {
-      username: 'root',
-      name: 'Username',
-      password: 'salasana',
-    }
+    const newUser = 
+      {
+        username: 'root',
+        name: 'Username',
+        password: 'salasana',
+      }
 
     const result = await api
       .post('/api/users')
@@ -133,6 +99,63 @@ describe('when there is one user at db', () => {
 
     const usersAtEnd = await helper.usersInDb()
     expect(usersAtEnd).toHaveLength(usersAtStart.length)
+  })
+
+  test('a new blog can be added and likes is defined as zero if not given', async() => {
+    const users = await helper.usersInDb()
+    const firstUser = users[0]
+    const token = jwt.sign(
+      {
+        username: firstUser.username,
+        id: firstUser.id
+      },
+      config.SECRET
+    )
+
+    const newBlog = 
+      {
+        title: 'Test blog',
+        author: 'Test author',
+        url: 'testurl',
+        user: firstUser.id
+      }
+  
+      await api
+        .post('/api/blogs')
+        .set('Authorization', `bearer ${token}`)
+        .send(newBlog)
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+      
+      const blogsAtEnd = await helper.blogsInDb()
+      expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
+
+      const blogWithoutLikes = blogsAtEnd.find(blog => blog.likes === 0)
+      expect(blogWithoutLikes.title).toBe("Test blog")
+  })
+
+  test('blog without title and url is bad request', async() => {
+    const users = await helper.usersInDb()
+    const firstUser = users[0]
+    const token = jwt.sign(
+      {
+        username: firstUser.username,
+        id: firstUser.id
+      },
+      config.SECRET
+    )
+
+    const newBlog = 
+      {
+        author: 'Test author',
+        user: firstUser.id
+      }
+  
+    await api
+      .post('/api/blogs')
+      .set('Authorization', `bearer ${token}`)
+      .send(newBlog)
+      .expect(400)
   })
 })
 

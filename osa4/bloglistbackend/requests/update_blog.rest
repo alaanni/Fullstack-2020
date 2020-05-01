@@ -1,9 +1,6 @@
-PUT http://localhost:3003/api/blogs/5e99a481d9c319425ca40441
+PUT http://localhost:3003/api/blogs/5ea82aac22bf2a5a7cba5911
 Content-Type: application/json
 
 {
-  "title": "MyBlog",
-  "author": "Maija Meikalainen",
-  "url": "wwww.myblog.com",
-  "likes": 4
+  "likes": 22
 }

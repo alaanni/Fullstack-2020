@@ -6,14 +6,12 @@ const initialBlogs = [
       title: "React patterns", 
       author: "Michael Chan",
       url: "https://reactpatterns.com/",
-      user: "5ea8230ef25f9b2c38c0be78",
       likes: 7
     }, 
     {
       title: "Go To Statement Considered Harmful",
       author: "Edsger W. Dijkstra",
       url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
-      user: "5ea8230ef25f9b2c38c0be78",
       likes: 5
     }, 
 
@@ -21,7 +19,6 @@ const initialBlogs = [
       title: "Canonical string reduction",
       author: "Edsger W. Dijkstra",
       url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
-      user: "5ea8230ef25f9b2c38c0be78",
       likes: 1
     } 
 ]
