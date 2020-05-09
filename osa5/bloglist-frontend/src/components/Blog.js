@@ -32,15 +32,15 @@ const Blog = ({
         <div>
           {blog.title} {blog.author} <button onClick={() => setViewAll(false)}>hide</button><br></br>
           {blog.url}<br></br>
-          {blog.likes} <button onClick={handleLike}>like</button><br></br>
+          {blog.likes} <button id='like' onClick={handleLike}>like</button><br></br>
           {blog.user.name}<br></br>
 
           {blog.user.username === user.username ?
-            <button onClick={handleRemove}>remove</button> :
-            <p></p>}
+            <button id='remove' onClick={handleRemove}>remove</button> :
+            null}
         </div>:
         <div>
-          {blog.title} {blog.author} <button onClick={() => setViewAll(true)}>view</button>
+          {blog.title} {blog.author} <button id='view' onClick={() => setViewAll(true)}>view</button>
         </div>
       }
     </div>
