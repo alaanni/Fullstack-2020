@@ -40,7 +40,7 @@ const Blog = ({
             null}
         </div>:
         <div>
-          {blog.title} {blog.author} <button id='view' onClick={() => setViewAll(true)}>view</button>
+          {blog.title} {blog.author} <button className='view' onClick={() => setViewAll(true)}>view</button>
         </div>
       }
     </div>

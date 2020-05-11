@@ -17,10 +17,14 @@ const App = () => {
 
   const blogFormRef = React.createRef()
 
-  useEffect(() => {
+  const updateBlogs = () => {
     blogService.getAll().then(blogs =>
-      setBlogs( blogs )
+      setBlogs(blogs)
     )
+  }
+
+  useEffect(() => {
+    updateBlogs()
   }, [])
 
   blogs.sort((a, b) => a.likes - b.likes).reverse()
@@ -40,22 +44,27 @@ const App = () => {
       const user = await loginService.login({
         username, password,
       })
-      window.localStorage.setItem(
-        'loggedBloglistUser', JSON.stringify(user)
-      )
-      setUser(user)
 
+      window.localStorage.setItem(
+        'loggedBlogappUser', JSON.stringify(user)
+      )
+
+      blogService.setToken(user.token)
+      setUser(user)
+      setUsername('')
+      setPassword('')
     } catch (exception) {
       setError(true)
       setMessage('wrong credentials')
       setTimeout(() => {
-        setError(false)
         setMessage(null)
+        setError(false)
       }, 5000)
     }
   }
+
   const handleLogout = () => {
-    window.localStorage.clear()
+    window.localStorage.removeItem('loggedBloglistUser')
     setUser(null)
   }
 
@@ -81,8 +90,7 @@ const App = () => {
     blogService
       .update(likedBlog)
       .then(returnedBlog => {
-        returnedBlog.user = likedBlog.user
-        setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
+        setBlogs(blogs.map(blog => blog.id !== id ? blog : likedBlog))
       })
       .catch(error)
   }
@@ -111,7 +119,7 @@ const App = () => {
 
   const blogForm = () => (
     <Togglable buttonLabel='create new blog' ref={blogFormRef}>
-      <BlogForm createBlog={addBlog}/>
+      <BlogForm createBlog={addBlog} user={user}/>
     </Togglable>
   )
 

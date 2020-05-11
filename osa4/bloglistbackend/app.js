@@ -12,7 +12,8 @@ const middleware = require('./utils/middleware')
 const logger = require('./utils/logger')
 const cors = require('cors')
 const mongoose = require('mongoose')
-mongoose.set('useCreateIndex', true);
+mongoose.set('useCreateIndex', true)
+mongoose.set('useFindAndModify', false)
 
 logger.info('connecting to', config.MONGODB_URI)
   
