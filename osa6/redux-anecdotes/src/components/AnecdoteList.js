@@ -12,12 +12,9 @@ const AnecdoteList = (props) => {
     anecdotes.sort((a,b) => a.votes - b.votes).reverse()
 
     const vote = (anecdote) => {
-        console.log('vote', anecdote.id)
-        dispatch(voteAnecdote(anecdote.id))
-        dispatch(newNotification(`you voted '${anecdote.content}'`))
-        setTimeout(() => {
-          dispatch(newNotification(''))
-        }, 5000)
+        console.log('vote', anecdote)
+        dispatch(voteAnecdote(anecdote))
+        dispatch(newNotification(`you voted '${anecdote.content}'`, 10))
       }
     
     const filterAnecdotes = () => {
