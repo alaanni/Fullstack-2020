@@ -1,12 +1,11 @@
 import React, { useState } from 'react'
+import  { useField } from './hooks'
 
 import {
   Switch,
   Route,
   Link,
-  Redirect,
   useRouteMatch,
-  //Router,
   useHistory,
 } from "react-router-dom"
 
@@ -59,20 +58,20 @@ const Footer = () => (
 )
 
 const CreateNew = (props) => {
+  const content = useField('text')
+  const author = useField('text')
+  const info = useField('text')
+  const reset = useField('text')
 
   const history = useHistory()
 
-  const [content, setContent] = useState('')
-  const [author, setAuthor] = useState('')
-  const [info, setInfo] = useState('')
-
-
   const handleSubmit = (e) => {
+    console.log(props)
     e.preventDefault()
     props.addNew({
-      content,
-      author,
-      info,
+      content: content.value,
+      author: author.value,
+      info: info.value,
       votes: 0
     })
     history.push('/')
@@ -81,20 +80,21 @@ const CreateNew = (props) => {
   return (
     <div>
       <h2>create a new anecdote</h2>
-      <form onSubmit={handleSubmit}>
+      <form>
         <div>
           content
-          <input name='content' value={content} onChange={(e) => setContent(e.target.value)} />
+          <input {...content} />
         </div>
         <div>
           author
-          <input name='author' value={author} onChange={(e) => setAuthor(e.target.value)} />
+          <input {...author} />
         </div>
         <div>
           url for more info
-          <input name='info' value={info} onChange={(e)=> setInfo(e.target.value)} />
+          <input {...info} />
         </div>
-        <button>create</button>
+        <button onClick={handleSubmit}>create</button>
+        <button onClick={reset.onReset}>reset</button>
       </form>
     </div>
   )
@@ -174,17 +174,10 @@ const App = () => {
 
   const match = useRouteMatch("/anecdotes/:id")
 
-  const match2 = useRouteMatch()
-  console.log(match2)
-
   const anecdote = match 
     ? anecdoteById(match.params.id)
     : null
   
-  console.log(match2)
-  console.log(match)
-  console.log(anecdote)
-
   return (
     <div>
       <h1>Software anecdotes</h1>
