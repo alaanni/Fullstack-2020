@@ -25,6 +25,13 @@ const useCountry = (name) => {
     .then(response => {
       setCountry({ data: response.data[0], found: true })
     })
+    .catch(error => {
+      console.log(error)
+      setCountry({found: false})
+      if(name === '') {
+        setCountry(null)
+      }
+    })
   }, [name])
 
   return country
@@ -71,7 +78,6 @@ const App = () => {
         <input {...nameInput} />
         <button>find</button>
       </form>
-
       <Country country={country} />
     </div>
   )
