@@ -2,32 +2,27 @@ import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import Notification from './components/Notification'
-import loginService from './services/login'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
 import { newNotification } from './reducers/notificationReducer'
-import { useDispatch } from 'react-redux'
+import { initBlogs, createBlog, likeBlog, deleteBlog } from './reducers/blogReducer'
+import { useDispatch, useSelector } from 'react-redux'
 
 const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
 
   const blogFormRef = React.createRef()
   const dispatch = useDispatch()
 
-  const updateBlogs = () => {
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs)
-    )
-  }
-
   useEffect(() => {
-    updateBlogs()
-  }, [])
+    dispatch(initBlogs())
+  }, [dispatch])
 
+  const blogs = useSelector(state => state.blogs)
+  console.log('blogs:', blogs)
   blogs.sort((a, b) => a.likes - b.likes).reverse()
 
   useEffect(() => {
@@ -39,26 +34,6 @@ const App = () => {
     }
   }, [])
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
-    try {
-      const user = await loginService.login({
-        username, password,
-      })
-
-      window.localStorage.setItem(
-        'loggedBlogappUser', JSON.stringify(user)
-      )
-
-      blogService.setToken(user.token)
-      setUser(user)
-      setUsername('')
-      setPassword('')
-    } catch (exception) {
-      dispatch(newNotification('wrong credentials', true, 5))
-    }
-  }
-
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBloglistUser')
     setUser(null)
@@ -69,19 +44,13 @@ const App = () => {
     blogService
       .create(blogObject)
       .then(returnedBlog => {
-        setBlogs(blogs.concat(returnedBlog))
+        dispatch(createBlog(returnedBlog))
       })
   }
 
   const giveLikes = (id) => {
     const blog = blogs.find(blog => blog.id === id)
-    const likedBlog = { ...blog, likes: blog.likes + 1 }
-
-    blogService
-      .update(likedBlog)
-      .then(returnedBlog => {
-        setBlogs(blogs.map(blog => blog.id !== id ? blog : likedBlog))
-      })
+    dispatch(likeBlog(blog))
   }
 
   const removeBlog = (id) => {
@@ -94,9 +63,7 @@ const App = () => {
         })
 
       dispatch(newNotification(`Deleted blog ${blog.title}`, false, 5))
-
-      setBlogs(blogs.filter(blog =>
-        blog.id !== id))
+      dispatch(deleteBlog(id))
     }
   }
 
@@ -119,7 +86,8 @@ const App = () => {
             password={password}
             setUsername={setUsername}
             setPassword={setPassword}
-            handleLogin={handleLogin}
+            user={user}
+            setUser={setUser}
           />
         </div> :
         <div>
