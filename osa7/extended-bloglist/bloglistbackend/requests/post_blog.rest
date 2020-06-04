@@ -1,0 +1,10 @@
+POST http://localhost:3003/api/blogs/
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFubmkiLCJpZCI6IjVlYTgyMzBlZjI1ZjliMmMzOGMwYmU3OCIsImlhdCI6MTU4ODEzNzE2Nn0.xOyuLs8gjArr4go-Av_aW2qYB9OQE8JElqFTzGCRRFk
+
+{
+  "title": "Anni's blog",
+  "author": "Anni",
+  "url": "wwww.annisblog.com",
+  "likes": 2
+}
