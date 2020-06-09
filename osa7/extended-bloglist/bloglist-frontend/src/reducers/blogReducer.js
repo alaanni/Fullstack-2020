@@ -42,23 +42,21 @@ export const createBlog = (blogObj) => {
   }
 }
 
-export const likeBlog = (blog) => {
-  return async dispatch => {
-    const newBlog = { ...blog, likes: blog.likes + 1 }
-    const likedBlog = await blogService.update(newBlog)
-    dispatch ({
-      type: 'LIKE',
-      data: likedBlog
-    })
-  }
+export const likeBlog = (blog) => async (dispatch) => {
+  blog.likes += 1
+  const likedBlog = await blogService.update(blog)
+  dispatch({
+    type: 'LIKE',
+    data: likedBlog
+  })
 }
 
 export const deleteBlog = (id) => {
   return async dispatch => {
-    const removedBlogId = await blogService.remove(id)
+    await blogService.remove(id)
     dispatch ({
       type: 'REMOVE_BLOG',
-      data: removedBlogId
+      data: id
     })
   }
 }

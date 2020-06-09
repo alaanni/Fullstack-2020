@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
+import loginService from './services/login'
 import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
@@ -22,7 +23,6 @@ const App = () => {
   }, [dispatch])
 
   const blogs = useSelector(state => state.blogs)
-  console.log('blogs:', blogs)
   blogs.sort((a, b) => a.likes - b.likes).reverse()
 
   useEffect(() => {
@@ -34,6 +34,26 @@ const App = () => {
     }
   }, [])
 
+  const handleLogin = async (event) => {
+    event.preventDefault()
+    try {
+      const user = await loginService.login({
+        username, password,
+      })
+
+      window.localStorage.setItem(
+        'loggedBloglistUser', JSON.stringify(user)
+      )
+
+      blogService.setToken(user.token)
+      setUser(user)
+      setUsername('')
+      setPassword('')
+    } catch (exception) {
+      dispatch(newNotification('wrong credentials', true, 5))
+    }
+  }
+
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBloglistUser')
     setUser(null)
@@ -41,29 +61,21 @@ const App = () => {
 
   const addBlog = (blogObject) => {
     blogFormRef.current.toggleVisibility()
-    blogService
-      .create(blogObject)
-      .then(returnedBlog => {
-        dispatch(createBlog(returnedBlog))
-      })
+    dispatch(createBlog(blogObject))
   }
 
-  const giveLikes = (id) => {
-    const blog = blogs.find(blog => blog.id === id)
+  const giveLikes = (blog) => {
     dispatch(likeBlog(blog))
   }
 
   const removeBlog = (id) => {
     const blog = blogs.find(blog => blog.id === id)
     if (window.confirm(`Removing blog ${blog.title} by ${blog.author}`)) {
-      blogService
-        .remove(blog)
-        .catch(error => {
+      dispatch(deleteBlog(id))
+        .catch (() => {
           dispatch(newNotification(`blog ${blog.title} was already deleted from server`, true, 5))
         })
-
       dispatch(newNotification(`Deleted blog ${blog.title}`, false, 5))
-      dispatch(deleteBlog(id))
     }
   }
 
@@ -86,8 +98,7 @@ const App = () => {
             password={password}
             setUsername={setUsername}
             setPassword={setPassword}
-            user={user}
-            setUser={setUser}
+            handleLogin={handleLogin}
           />
         </div> :
         <div>

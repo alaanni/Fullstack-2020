@@ -19,8 +19,9 @@ const Blog = ({
 
   const handleLike = (event) => {
     event.preventDefault()
-    giveLikes(blog.id)
+    giveLikes(blog)
   }
+
   const handleRemove = (event) => {
     event.preventDefault()
     removeBlog(blog.id)
