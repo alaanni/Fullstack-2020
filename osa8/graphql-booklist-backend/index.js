@@ -88,8 +88,8 @@ let books = [
 const typeDefs = gql`
   type Book {
     title: String!
-    published: Int!
     author: String!
+    published: String!
     id: ID!
     genres: [String]
   }
@@ -97,7 +97,7 @@ const typeDefs = gql`
   type Author {
     name: String!
     id: ID!
-    born: Int
+    born: String
     bookCount: Int
   }
 
@@ -112,16 +112,16 @@ const typeDefs = gql`
     addBook(
       title: String!
       author: String!
-      published: Int!
-      genres: [String!]
+      published: String!
+      genres: [String]
     ): Book
     addAuthor(
       name: String!
-      born: Int
+      born: String
     ): Author
     editAuthor(
       name: String!
-      setBornTo: Int!
+      born: String!
     ): Author
   }
 `
@@ -157,7 +157,7 @@ const resolvers = {
         return null
       }
 
-      const updatedAuthor = { ...author, born: args.setBornTo }
+      const updatedAuthor = { ...author, born: args.born }
       authors = authors.map(a => a.name === args.name ? updatedAuthor : a)
       return updatedAuthor
     }
