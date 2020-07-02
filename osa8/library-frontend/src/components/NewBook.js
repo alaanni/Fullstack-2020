@@ -21,7 +21,14 @@ const NewBook = (props) => {
     
     console.log('add book...')
 
-    createBook({ variables: { title, author, published, genres } })
+    createBook({ 
+      variables: { 
+        title, 
+        published, 
+        name: author, 
+        genres
+      } 
+    })
 
     setTitle('')
     setPublished('')
@@ -57,7 +64,7 @@ const NewBook = (props) => {
           <input
             type='number'
             value={published}
-            onChange={({ target }) => setPublished(target.value)}
+            onChange={({ target }) => setPublished(parseInt(target.value))}
           />
         </div>
         <div>
