@@ -1,6 +1,8 @@
 const { ApolloServer, gql, UserInputError } = require('apollo-server')
 const { UniqueDirectiveNamesRule } = require('graphql')
 const { v1: uuid } = require('uuid')
+const { PubSub } = require('apollo-server')
+const pubsub = new PubSub()
 const mongoose = require('mongoose')
 const Book = require('./models/book')
 const Author = require('./models/author')
@@ -38,7 +40,7 @@ const typeDefs = gql`
     name: String!
     born: Int
     id: ID!
-    bookCount: Int!
+    bookCount: Int
   }
 
   type User {
@@ -59,6 +61,10 @@ const typeDefs = gql`
     me: User
   }
 
+  type Subscription {
+    bookAdded: Book!
+  }    
+
   type Mutation {
     addBook(
       title: String!
@@ -72,6 +78,7 @@ const typeDefs = gql`
     ): Author
     createUser(
       username: String!
+      favoriteGenre: String
     ): User
     login(
       username: String!
@@ -133,6 +140,7 @@ const resolvers = {
           invalidArgs: args,
         })
       }
+      pubsub.publish('BOOK_ADDED', { bookAdded: book })
     },
     editAuthor: async (root, args, context) => {
       const author = await Author.findOneAndUpdate({ name: args.name }, { name: args.name, born: args.born }, { new: true })
@@ -156,7 +164,7 @@ const resolvers = {
       return author
     },
     createUser: (root, args) => {
-      const user = new User({ username: args.username })
+      const user = new User({ username: args.username, favoriteGenre: args.favoriteGenre })
   
       return user.save()
         .catch(error => {
@@ -179,7 +187,12 @@ const resolvers = {
   
       return { value: jwt.sign(userForToken, JWT_SECRET) }
     },
-  }
+  },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator(['BOOK_ADDED'])
+    },
+  },
 }
 
 const server = new ApolloServer({
@@ -198,6 +211,7 @@ const server = new ApolloServer({
   }
 })
 
-server.listen().then(({ url }) => {
+server.listen().then(({ url, subscriptionsUrl }) => {
   console.log(`Server ready at ${url}`)
+  console.log(`Subscriptions ready at ${subscriptionsUrl}`)
 })

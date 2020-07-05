@@ -10,12 +10,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@apollo/link-ws": "^2.0.0-beta.3",
     "apollo-server": "^2.14.3",
     "dotenv": "^8.2.0",
     "graphql": "^15.1.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.19",
     "mongoose-unique-validator": "^2.0.3",
+    "subscriptions-transport-ws": "^0.9.16",
     "uuid": "^8.1.0"
   },
   "devDependencies": {

@@ -3,9 +3,10 @@ import React, { useState } from 'react'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
+import Recommendations from './components/Recommendations'
 import LoginForm from './components/LoginForm'
-import { useQuery, useApolloClient } from '@apollo/client'
-import { ALL_AUTHORS } from './queries'
+import { useQuery, useApolloClient, useSubscription } from '@apollo/client'
+import { ALL_AUTHORS, BOOK_ADDED } from './queries'
 
 const App = () => {
   const [token, setToken] = useState(null)
@@ -14,6 +15,14 @@ const App = () => {
     pollInterval: 2000
   })
   const client = useApolloClient()
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      console.log(subscriptionData)
+      const addedBook = subscriptionData.data.bookAdded
+      window.alert(`${addedBook.title} added`)
+    }
+  })
 
   if (result.loading)  {
     return <div>loading...</div>
@@ -60,6 +69,7 @@ const App = () => {
         <button onClick={() => setPage('authors')}>authors</button>
         <button onClick={() => setPage('books')}>books</button>
         <button onClick={() => setPage('add')}>add book</button>
+        <button onClick={() => setPage('recommendations')}>recommend</button>
         <button onClick={logout}>log out</button>
       </div>
 
@@ -75,6 +85,10 @@ const App = () => {
 
       <NewBook
         show={page === 'add'}
+      />
+
+      <Recommendations
+        show={page === 'recommendations'}
       />
 
     </div>
