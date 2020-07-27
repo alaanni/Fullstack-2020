@@ -14,18 +14,18 @@ const parseArguments = (args: Array<string>): BmiValues => {
         return {
         height: Number(args[2]),
         weight: Number(args[3])
-        }
+        };
     } else {
         throw new Error('Provided values were not numbers!');
     }
-}
+};
 
 export const calculateBmi = (height: number, weight: number) : Result => {
 const heightToMeters = height / 100;
 const bmi = weight / (heightToMeters * heightToMeters);
 
     if (bmi < 15) {
-        return ("Very severely underweight")
+        return ("Very severely underweight");
     }
     if (bmi >= 15 && bmi < 16) {
         return ("Severely underweight");
@@ -48,12 +48,12 @@ const bmi = weight / (heightToMeters * heightToMeters);
     if (bmi >= 40) {
         return ("Obese Class III (Very severely obese)");
     }
-    else throw new Error('Something bad happened') 
-}
+    else throw new Error('Something bad happened');
+};
 
 try {
     const { height, weight } = parseArguments(process.argv);
     calculateBmi(height, weight);
     } catch (e) {
-    console.log('Error, something bad happened, message: ', e.message);
+    //console.log('Error, something bad happened, message: ', e.message);
 }

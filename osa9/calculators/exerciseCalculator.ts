@@ -9,58 +9,54 @@ interface ExercisesResult {
 }
 
 interface ExerciseValues {
-    periodLength: number;
-    trainingDays: number;
-    success: boolean;
+    exercisePeriod: Array<number>;
     target: number;
-    average: number;
 }
 
 const parseArgs = (args: Array<string>) : ExerciseValues => {
     if (args.length < 3) throw new Error('Not enough arguments');
     if (args.length > 50) throw new Error('Too many arguments');
 
-    args.shift()
     const argsToNumbers = args.map(value => Number(value));
     if (!argsToNumbers.includes(NaN)) {
-        const target = Number(argsToNumbers.shift())
-        const average = (argsToNumbers.reduce((a, b) => a + b, 0))/argsToNumbers.length
+        const target = Number(argsToNumbers.shift());
         return {
-            periodLength: argsToNumbers.length,
-            trainingDays: (argsToNumbers.filter(d => !(d === 0))).length,
-            success: target <= average ? true : false,
-            target: target,
-            average: average,
-        }
+            exercisePeriod: argsToNumbers,
+            target: target
+        };
     } else {
         throw new Error('Provided values were not numbers!');
     }
-}
+};
 
-const calculateExercises = (periodLength: number, trainingDays: number,
-    success: boolean, target: number, average: number) : ExercisesResult => {
+export const calculateExercises = (exercisePeriod: Array<number>, target: number) : ExercisesResult => {
+
+    const periodLength = exercisePeriod.length;
+    const trainingDays = (exercisePeriod.filter(d => !(d === 0))).length;
+    const average = (exercisePeriod.reduce((a, b) => a + b, 0))/periodLength;
+    const success = target <= average ? true : false;
 
     let rating = 0;
     let ratingDescription = '';
 
     if (average < 1 && average >= 0) {
-        rating = 1
+        rating = 1;
     }
     if (average >= 1 && average < 2) {
-        rating = 2
+        rating = 2;
     }
     if (average >= 2) {
-        rating = 3
+        rating = 3;
     }
 
     if (rating === 1) {
-        ratingDescription = "Not good at all"
+        ratingDescription = "Not good at all";
     }
     if (rating === 2) {
-        ratingDescription = "Not bad but you can do better"
+        ratingDescription = "Not bad but you can do better";
     }
     if (rating === 3) {
-        ratingDescription = "Good job!"
+        ratingDescription = "Good job!";
     } 
 
     return ({
@@ -71,16 +67,13 @@ const calculateExercises = (periodLength: number, trainingDays: number,
         ratingDescription: ratingDescription,
         target: target,
         average: average
-    })
-}
+    });
+};
 
 try {
-    (process.argv).shift();
-    const { periodLength, trainingDays, success, target, average } = parseArgs(process.argv);
-    console.log(calculateExercises(periodLength, trainingDays, success, target, average))
+    const { exercisePeriod, target} = parseArgs(process.argv);
+    calculateExercises(exercisePeriod, target);
     
 } catch (error) {
-    console.log('Error, something went wrong, message: ', error.message);
+    console.log('Error, something went wrong');
 }
-
-export { parseArgs, calculateExercises };
