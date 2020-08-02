@@ -45,11 +45,13 @@ app.post('/exercises', (req, res) => {
       error: 'parameters missing'
     });
   } 
+
   if(isNaN(target) || daily_exercises.includes(NaN)) {
     res.status(400).json({
       error: 'malformmatted parameters'
     });
   }
+
   const result = calculateExercises(daily_exercises, target);
   res.json(result);
 });

@@ -74,6 +74,7 @@ try {
     const { exercisePeriod, target} = parseArgs(process.argv);
     calculateExercises(exercisePeriod, target);
     
-} catch (error) {
-    console.log('Error, something went wrong');
+} catch (e) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    console.log('Something went wrong, error message: ', e.message);
 }

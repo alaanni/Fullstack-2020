@@ -48,12 +48,13 @@ const bmi = weight / (heightToMeters * heightToMeters);
     if (bmi >= 40) {
         return ("Obese Class III (Very severely obese)");
     }
-    else throw new Error('Something bad happened');
+    else throw new Error;
 };
 
 try {
     const { height, weight } = parseArguments(process.argv);
     calculateBmi(height, weight);
     } catch (e) {
-    //console.log('Error, something bad happened, message: ', e.message);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        console.log('Error, something bad happened, message: ', e.message);
 }
