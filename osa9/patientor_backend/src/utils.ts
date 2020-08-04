@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { NewPatientEntry, Gender } from './types';
+import { NewPatientEntry, Gender, Entry } from './types';
 
 
 const isString = (text: any): text is string => {
@@ -50,6 +50,14 @@ const parseOccupation = (occupation: any): string => {
     return occupation;
 };
 
+const parseEntries = (entries: any): Array<Entry> => {
+    /*if (!entries) {
+      throw new Error('Incorrect or missing entries');
+    }*/
+    entries = [ ];
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return entries;
+};
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const toNewPatientEntry = (object: any): NewPatientEntry => {
@@ -58,7 +66,9 @@ const toNewPatientEntry = (object: any): NewPatientEntry => {
       dateOfBirth: parseDateOfBirth(object.dateOfBirth),
       ssn: parseSsn(object.ssn),
       gender: parseGender(object.gender),
-      occupation: parseOccupation(object.occupation)
+      occupation: parseOccupation(object.occupation),
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      entries: parseEntries(object.entries)
     };
   };
 
