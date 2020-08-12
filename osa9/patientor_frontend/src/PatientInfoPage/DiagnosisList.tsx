@@ -7,7 +7,7 @@ export const DiagnosisList: React.FC<{diagnosisCodes: Array<Diagnosis['code']>}>
 
     return (
         <div>
-            <h2>Diagnoses</h2>
+            <h4>Diagnoses:</h4>
             <ul>{diagnosisCodes.map(code => <li key={code}>{code} {diagnoses[code].name}</li>)}</ul>
         </div>
     );

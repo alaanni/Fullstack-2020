@@ -1,6 +1,6 @@
 import React from "react";
 import axios from "axios";
-import { Icon } from "semantic-ui-react";
+import { Icon, Item, Container } from "semantic-ui-react";
 import { Patient } from "../types";
 import { apiBaseUrl } from "../constants";
 import { useStateValue } from "../state";
@@ -10,7 +10,6 @@ import EntryDetails from "./EntryDetails";
 
 const PatientInfoPage: React.FC = () => {
 const [{patients}, dispatch] = useStateValue();
-//const [{ diagnoses }] = useStateValue();
 console.log('state? :',[{patients}, dispatch]);
 console.log('patients:', patients);
 
@@ -44,7 +43,7 @@ React.useEffect(() => {
   if(!patient.entries) return null;
 
   return (
-    <div>
+    <Container>
         <h1>{patient.name} <Icon {...genderIcons[patient.gender]}/></h1> 
 
         <div><b>snn: {patient.ssn}</b></div>
@@ -52,9 +51,9 @@ React.useEffect(() => {
         
         <h2>entries</h2>
 
-        {patient.entries.map(entry => <EntryDetails key={entry.date} entry={entry}/>)}
+        <Item.Group divided>{patient.entries.map(entry => <EntryDetails key={entry.date} entry={entry}/>)}</Item.Group>
 
-    </div>
+    </Container>
   );
 };
 
