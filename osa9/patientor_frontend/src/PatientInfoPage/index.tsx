@@ -1,13 +1,17 @@
-import React, { useEffect } from "react";
+import React from "react";
 import axios from "axios";
 import { Icon } from "semantic-ui-react";
 import { Patient } from "../types";
 import { apiBaseUrl } from "../constants";
 import { useStateValue } from "../state";
 import { useParams } from "react-router-dom";
+import { updatePatient } from "../state/reducer";
+import EntryDetails from "./EntryDetails";
 
 const PatientInfoPage: React.FC = () => {
 const [{patients}, dispatch] = useStateValue();
+//const [{ diagnoses }] = useStateValue();
+console.log('state? :',[{patients}, dispatch]);
 console.log('patients:', patients);
 
 const { id } = useParams<{ id: string }>();
@@ -21,19 +25,23 @@ const genderIcons = {
     other: {name: "other gender vertical" as "other gender vertical"}
 };
 
-useEffect(() => {
+React.useEffect(() => {
   const fetchPatient = async () => {
-    try {
-      const { data: patientFromApi } = await axios.get<Patient>(
-        `${apiBaseUrl}/patients/${id}`
-      );
-      dispatch({ type: "UPDATE_PATIENT", payload: patientFromApi });
-    } catch (e) {
-      console.error(e);
-    }
-  };
-  fetchPatient();
-}, [id, dispatch]);
+      try {
+        const { data: patientFromApi } = await axios.get<Patient>(
+          `${apiBaseUrl}/patients/${id}`
+        );
+        dispatch(updatePatient(patientFromApi));
+        console.log('patientFromApi:', patientFromApi);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    fetchPatient();
+  }, [id, dispatch]);
+
+  if(!patient) return null;
+  if(!patient.entries) return null;
 
   return (
     <div>
@@ -41,6 +49,11 @@ useEffect(() => {
 
         <div><b>snn: {patient.ssn}</b></div>
         <div><b>occupation: {patient.occupation}</b></div>
+        
+        <h2>entries</h2>
+
+        {patient.entries.map(entry => <EntryDetails key={entry.date} entry={entry}/>)}
+
     </div>
   );
 };

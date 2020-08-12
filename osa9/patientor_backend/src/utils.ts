@@ -18,7 +18,7 @@ const isDate = (date: string): boolean => {
 return Boolean(Date.parse(date));
 };
 
-const parseDateOfBirth = (dateOfBirth: unknown): string => {
+const parseDateOfBirth = (dateOfBirth: any): string => {
 if (!dateOfBirth || !isString(dateOfBirth) || !isDate(dateOfBirth)) {
     throw new Error('Incorrect or missing date of birth');
 }
@@ -50,11 +50,8 @@ const parseOccupation = (occupation: any): string => {
     return occupation;
 };
 
-const parseEntries = (entries: any): Array<Entry> => {
-    /*if (!entries) {
-      throw new Error('Incorrect or missing entries');
-    }*/
-    entries = [ ];
+
+const parseEntries = (entries: any): Entry[] => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return entries;
 };
