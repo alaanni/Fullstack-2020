@@ -26,23 +26,22 @@ interface BaseEntry {
     "CriticalRisk" = 3
   }
   
-  interface HealthCheckEntry extends BaseEntry {
+interface HealthCheckEntry extends BaseEntry {
     type: "HealthCheck";
     healthCheckRating: HealthCheckRating;
   }
 
-  interface HospitalEntry extends BaseEntry {
+interface HospitalEntry extends BaseEntry {
     type: "Hospital";
-    description: string;
     discharge: {
       date: string;
       criteria: string;
     };
   }
-  
-  interface OccupationalHealthCareEntry extends BaseEntry {
+
+interface OccupationalHealthCareEntry extends BaseEntry {
     type: "OccupationalHealthCare";
-    description: string;
+    employerName: string;
     sickLeave: {
       startDate: string;
       endDate: string;
@@ -67,3 +66,14 @@ export interface Patient {
 export type NonSensitivePatientEntry = Omit<Patient, 'ssn' | 'entries' >;
 
 export type NewPatientEntry = Omit<Patient, 'id'>;
+
+export type NewHospitalEntry = Omit<HospitalEntry, 'id'>;
+
+export type NewOccupationalHealthcareEntry = Omit<OccupationalHealthCareEntry, 'id'>;
+
+export type NewHealthCheckEntry = Omit<HealthCheckEntry, 'id'>;
+
+export type NewEntry =
+  | NewHospitalEntry
+  | NewOccupationalHealthcareEntry
+  | NewHealthCheckEntry;

@@ -1,6 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { NewPatientEntry, Gender, Entry } from './types';
+import { 
+  NewPatientEntry,
+  Entry,
+  Gender, 
+  NewHealthCheckEntry, 
+  NewHospitalEntry, 
+  NewOccupationalHealthcareEntry
+} from './types';
 
 
 const isString = (text: any): text is string => {
@@ -18,9 +26,9 @@ const isDate = (date: string): boolean => {
 return Boolean(Date.parse(date));
 };
 
-const parseDateOfBirth = (dateOfBirth: any): string => {
+const parseDate = (dateOfBirth: any): string => {
 if (!dateOfBirth || !isString(dateOfBirth) || !isDate(dateOfBirth)) {
-    throw new Error('Incorrect or missing date of birth');
+    throw new Error('Incorrect or missing date');
 }
 return dateOfBirth;
 };
@@ -57,10 +65,10 @@ const parseEntries = (entries: any): Entry[] => {
 };
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const toNewPatientEntry = (object: any): NewPatientEntry => {
+export const toNewPatientEntry = (object: any): NewPatientEntry => {
     return {
       name: parseName(object.name),
-      dateOfBirth: parseDateOfBirth(object.dateOfBirth),
+      dateOfBirth: parseDate(object.dateOfBirth),
       ssn: parseSsn(object.ssn),
       gender: parseGender(object.gender),
       occupation: parseOccupation(object.occupation),
@@ -68,5 +76,15 @@ const toNewPatientEntry = (object: any): NewPatientEntry => {
       entries: parseEntries(object.entries)
     };
   };
-
-export default toNewPatientEntry;
+/*
+  const assertNever = (value: never): never => {
+    throw new Error(
+      `Unhandled discriminated union member: ${JSON.stringify(value)}`
+    );
+  };
+  */
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const toNewEntry = (object: NewHospitalEntry | NewOccupationalHealthcareEntry | NewHealthCheckEntry): NewHospitalEntry | NewOccupationalHealthcareEntry | NewHealthCheckEntry => {
+  return object;
+  
+};
