@@ -19,6 +19,16 @@ router.get('/:id', (req, res) => {
   }
 });
 
+router.get('/:id/entries', (req, res) => {
+  const patient = patientService.findById(req.params.id);
+  if (patient) {
+    console.log(patient.entries);
+    res.send(patient.entries);
+  } else {
+    res.sendStatus(404);
+  }
+});
+
 router.post('/', (req, res) => {
   try {
     const newPatientEntry = toNewPatientEntry(req.body);
@@ -35,6 +45,7 @@ router.post('/:id/entries', (req, res) => {
     const newEntry = toNewEntry(req.body);
     const entryAddedPatient = patientService.addEntry(newEntry, patient);
     res.json(entryAddedPatient);
+    console.log('entryAddedPatient:', entryAddedPatient);
   } else {
     res.status(400);
   }

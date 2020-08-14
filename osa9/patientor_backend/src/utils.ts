@@ -76,13 +76,7 @@ export const toNewPatientEntry = (object: any): NewPatientEntry => {
       entries: parseEntries(object.entries)
     };
   };
-/*
-  const assertNever = (value: never): never => {
-    throw new Error(
-      `Unhandled discriminated union member: ${JSON.stringify(value)}`
-    );
-  };
-  */
+
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const toNewEntry = (object: NewHospitalEntry | NewOccupationalHealthcareEntry | NewHealthCheckEntry): NewHospitalEntry | NewOccupationalHealthcareEntry | NewHealthCheckEntry => {
   return object;

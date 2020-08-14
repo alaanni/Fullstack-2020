@@ -5,12 +5,11 @@ import { v4 as uuidv4 } from 'uuid';
 let patientsList = [...patients];
 
 const getEntries = (): Array<Patient> => {
-  return patients;
+  return patientsList;
 };
 
-
 const getNonSensitiveEntries = (): Array<NonSensitivePatientEntry> => {
-  return patients.map(({ id, name, dateOfBirth, gender, occupation }) => ({
+  return patientsList.map(({ id, name, dateOfBirth, gender, occupation }) => ({
       id,
       name,
       dateOfBirth,
@@ -20,10 +19,9 @@ const getNonSensitiveEntries = (): Array<NonSensitivePatientEntry> => {
 };
 
 const findById = (id: string): Patient | undefined => {
-  const entry = patients.find(d => d.id === id);
+  const entry = patientsList.find(d => d.id === id);
   return entry;
 };
-
 
 const addPatient = ( entry: NewPatientEntry ): Patient=> {
   const newPatientEntry = {
@@ -31,7 +29,7 @@ const addPatient = ( entry: NewPatientEntry ): Patient=> {
     ...entry
   };
 
-  patients.push(newPatientEntry);
+  patientsList.push(newPatientEntry);
   return newPatientEntry;
 };
 
@@ -40,9 +38,9 @@ const addEntry = ( newEntry: NewEntry, patient: Patient ): Patient=> {
     id: uuidv4(),
     ...newEntry
   };
+  console.log('entry:', entry);
   const updatedPatient = { ...patient, entries: patient.entries.concat(entry)};
-  patientsList = patientsList.map(p => p.id === updatedPatient.id ? updatedPatient : p);
-
+  patientsList = patientsList.map((p) => p.id === updatedPatient.id ? updatedPatient : p);
   return updatedPatient;
 };
 
