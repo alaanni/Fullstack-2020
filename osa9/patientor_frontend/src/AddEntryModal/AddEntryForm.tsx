@@ -26,7 +26,7 @@ export const AddEntryForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
         diagnosisCodes: [''],
         discharge: {
             date: "",
-            criteria:""
+            criteria: ""
         }
       }}
       onSubmit={onSubmit}
@@ -42,12 +42,9 @@ export const AddEntryForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
         if (!values.specialist) {
           errors.specialist = requiredError;
         }
-        if (!values.discharge.date) {
+        if (!values.discharge) {
           errors.discharge = requiredError;
         }
-        if (!values.discharge.criteria) {
-            errors.discharge = requiredError;
-          }
         return errors;
       }}
     >
@@ -79,14 +76,14 @@ export const AddEntryForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
             /> 
             <Field
               label="Discharge date"
-              placeholder="Discharge date"
-              name="dischargeDate"
+              placeholder="YYYY-MM-DD"
+              name="discharge.date"
               component={TextField}
             />
             <Field
               label="Discharge criteria"
-              placeholder="Discharge crieteria"
-              name="dischargeCriteria"
+              placeholder="Discharge criteria"
+              name="discharge.criteria"
               component={TextField}
             />
             
